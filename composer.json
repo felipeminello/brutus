@@ -1,0 +1,30 @@
+{
+	"keywords" : [
+		"boombeach",
+		"força tarefa",
+		"brutus"
+	],
+	"autoload" : {
+		"psr-4" : {
+			"Core\\" : "src/Core",
+			"Lib\\" : "src/Lib"
+		}
+	},
+	"name" : "Brutus",
+	"description" : "Estatísticas de ataque",
+	"license" : "MIT",
+	"require" : {
+		"php" : ">=5.6",
+		"twig/twig" : "~1.0",
+		"respect/validation" : "0.8.*",
+		"respect/rest" : "0.6.*",
+		"zendframework/zend-mvc" : "~2",
+		"dannyvankooten/php-router" : "dev-master"
+	},
+	"authors" : [{
+			"name" : "Felipe Minello",
+			"email" : "felipe@minello.com.br",
+			"homepage" : "http://minello.com.br"
+		}
+	]
+}

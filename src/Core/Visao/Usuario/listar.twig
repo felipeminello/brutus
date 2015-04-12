@@ -1,0 +1,112 @@
+{% include 'cabecalho.twig' %}
+{% include 'menu.twig' %}
+
+<div class="container">
+	<div class="row">
+		<div class="col-xs-8">
+			<h1>Usuários</h1>
+		</div>
+		{% if (permissao.inserir == true) %}
+		<div class="col-xs-4 text-right" style="padding-top: 20px;">
+			<button class="btn btn-primary" type="button" id="btn_inserir" aria-label="Left Align">
+				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Inserir
+			</button>
+		</div>
+		{% endif %}
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<table class="table table-striped" id="listar" data-order='[[ 0, "asc" ]]' data-page-length="50">
+				<thead>
+					<tr>
+						<th width="5%">#</th>
+						<th width="35%">Nome</th>
+						<th width="20%">Data de entrada</th>
+						<th width="10%" style="text-align: center;">Tipo</th>
+						{% if permissao.alterar or permissao.excluir %}
+						<th width="10" style="text-align: center;">Ações</th>
+						{% endif %}
+					</tr>
+				</thead>
+				<tbody>
+					{% for u in usuarios %}
+					<tr id="linha{{ u.id }}">
+						<td align="left">{{ u.id }}</td>
+						<td align="left">{{ u.nome }}</td>
+						<td align="left">{{ u.dataEntrada }}</td>
+						<td align="center">{% if u.tipo == 'l' %} Líder {% elseif u.tipo == 'o' %} Oficial {% else %} Membro {% endif %}</span></td>
+						{% if permissao.alterar or permissao.excluir %}
+							<td align="center">
+							<div class="col-sm-6 col-xs-12">
+								{% if permissao.alterar %}
+									<button class="btn btn-primary btn-sm btn-block editar" id="e{{ u.id }}" aria-label="Left Align" type="button">Editar</button>
+								{% endif %}
+							</div>
+							<div class="col-sm-6 col-xs-12">
+								{% if permissao.excluir %}
+									<button class="btn btn-danger btn-sm btn-block delete" id="d{{ u.id }}" aria-label="Left Align" type="button">Excluir</button>
+								{% endif %}
+							</div>
+							</td>
+						{% endif %}
+						
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+	$('#btn_inserir').click(function() {
+		location.href = '{{ dirRoot }}usuario/cadastro';
+
+		$(this).attr('disabled', true);
+	});
+
+	$('#listar').DataTable({
+		"lengthChange": false,
+		"columnDefs": [
+			{ "orderable": false, "targets": 4 }
+		]
+	});
+
+	$('.editar').click(function() {
+		$(this).attr('disabled', true);
+		
+		location.href = '{{ dirRoot }}usuario/cadastro/'+$(this).attr('id').substr(1);
+	});
+
+	$('.delete').click(function() {
+		var id = $(this).attr('id').substr(1);
+
+		bootbox.confirm("Deseja excluir esse usuário?", function(r) {
+			if (r) {
+				$.ajax({
+					type: 'delete',
+					url: '{{ dirRoot }}usuario/',
+					data: { id: id },
+					dataType: 'json',
+					beforeSend: function() {
+						$('#e'+id).attr('disabled', true);
+					}
+				}).done(function(json) {
+					if (json.r == true) {
+						$('#linha'+id).fadeOut('fast');
+					} else {
+						$('#r_'+id).addClass('alert-danger');
+
+					}
+				}).fail(function() {
+					
+				}).always(function() {
+					$('#e'+id).attr('disabled', false);
+				});
+			}
+		});
+	});
+	
+});
+</script>
+{% include 'rodape.twig' %}

@@ -1,0 +1,18 @@
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th width="70%">Operação</th>
+			<th width="20%">Data</th>
+			<th width="10%" style="text-align: center;">Valor</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for a in ataques %}
+		<tr>
+			<td align="left">{{ a.operacao }}</td>
+			<td align="left">{{ a.data }}</td>
+			<td align="center">{{ a.valor }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>

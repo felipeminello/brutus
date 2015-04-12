@@ -1,0 +1,103 @@
+{% include 'cabecalho.twig' %}
+{% include 'menu.twig' %}
+
+<div class="container">
+	<div class="row">
+		<div class="col-xs-8">
+			<h1>{{ dadosPagina.titulo }}</h1>
+		</div>
+		<div class="col-xs-4 text-right" style="padding-top: 20px;">
+			<button class="btn btn-primary" type="button" id="btn_listar" aria-label="Left Align">
+				<span class="glyphicon glyphicon-list" aria-hidden="true"></span> Listar
+			</button>
+			<button class="btn btn-primary" type="button" id="btn_grafico" aria-label="Left Align">
+				<span class="glyphicon glyphicon-signal" aria-hidden="true"></span> Gráfico
+			</button>
+		</div>
+	</div>
+	<form role="form" id="cadastro">
+		<input type="hidden" name="id" id="id" value="{{ operacao.id }}">
+		<div class="row">
+			<div class="col-xs-12 col-sm-6 col-md-4">
+				<div class="form-group">
+					<label for="nome">Nome</label>
+					<input class="form-control" type="text" id="nome" name="nome" value="{{ operacao.nome }}">
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-6 col-md-4">
+				<div class="form-group">
+					<label for="data">Data</label>
+					<input class="form-control datepicker data" type="data" id="data" name="data" value="{{ operacao.data }}">
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-6 col-md-4">
+				<div class="form-group">
+					<label for="finalizada">Finalizada</label>
+					<select class="form-control" id="finalizada" name="finalizada">
+						<option value="0" {% if (operacao.finalizada == '0') %} selected="selected" {% endif %}>Não</option>
+						<option value="1" {% if (operacao.finalizada == '1') %} selected="selected" {% endif %}>Sim</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="form-group">
+					<button class="btn btn-default" type="submit" id="e_cadastro">Cadastrar</button>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="alert" id="r_cadastro"></div>
+	
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+	$('#btn_listar').click(function() {
+		location.href = '{{ dirRoot }}operacao';
+
+		$(this).attr('disabled', true);
+	});
+
+	
+	$('#btn_grafico').click(function() {
+		location.href = '{{ dirRoot }}operacao/grafico';
+
+		$(this).attr('disabled', true);
+	});
+
+	
+	
+	$('form#cadastro').submit(function() {
+		var id = $(this).attr('id');
+
+		$.ajax({
+			type: '{{ form.type }}',
+			url: '{{ form.action }}',
+			data: { id: $('#id').val(), nome: $('#nome').val(), data: $('#data').val(), finalizada: $('#finalizada').val() },
+			dataType: '{{ form.dataType }}',
+			beforeSend: function() {
+				$('#e_'+id).attr('disabled', true);
+				$('#r_'+id).removeClass('alert-success alert-danger');
+			}
+		}).done(function(json) {
+			if (json.r == true) {
+				$('#r_'+id).addClass('alert-success');
+
+				if (json.clear == true)
+					document.getElementById(id).reset();
+			} else
+				$('#r_'+id).addClass('alert-danger');
+
+			$('#r_'+id).html(json.m);
+		}).fail(function() {
+			$('#r_'+id).addClass('alert-danger').text('Erro no retorno');
+		}).always(function() {
+			$('#e_'+id).attr('disabled', false);
+		});
+
+		return false;
+	});
+});
+</script>
+{% include 'rodape.twig' %}

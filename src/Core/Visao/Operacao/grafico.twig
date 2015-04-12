@@ -1,0 +1,50 @@
+{% include 'cabecalho.twig' %}
+{% include 'menu.twig' %}
+
+<div class="container">
+	<div class="row">
+		<div class="col-xs-10">
+			<h1>{{ dadosPagina.titulo }}</h1>
+		</div>
+		<div class="col-xs-1 text-right" style="padding-top: 20px;">
+			<button class="btn btn-primary" type="button" id="btn_listar" aria-label="Left Align">
+				<span class="glyphicon glyphicon-list" aria-hidden="true"></span> Listar
+			</button>
+		</div>
+		<div class="col-xs-1 text-right" style="padding-top: 20px;">
+			<button class="btn btn-primary" type="button" id="btn_inserir" aria-label="Left Align">
+				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Inserir
+			</button>
+		</div>
+	</div>
+	<div id="myfirstchart" style="height: 250px;"></div>
+	
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+	new Morris.Bar({
+		element: 'myfirstchart',
+		data: [
+			{% for y, x in operacoes %}
+			{ y: '{{ y }}', x: '{{ x }}' },
+			{% endfor %}
+		],
+		xkey: 'y',
+		ykeys: ['x'],
+		labels: ['Operação']
+	});
+	
+	$('#btn_listar').click(function() {
+		location.href = '{{ dirRoot }}operacao';
+
+		$(this).attr('disabled', true);
+	});
+	
+	$('#btn_inserir').click(function() {
+		location.href = '{{ dirRoot }}operacao/cadastro';
+
+		$(this).attr('disabled', true);
+	});
+});
+</script>
+{% include 'rodape.twig' %}

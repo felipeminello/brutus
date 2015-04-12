@@ -1,0 +1,165 @@
+{% include 'cabecalho.twig' %}
+{% include 'menu.twig' %}
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      ...
+    </div>
+  </div>
+</div>
+
+
+<div class="container">
+	<div class="row">
+		<div class="col-xs-8">
+			<h1>Operações</h1>
+		</div>
+		
+		<div class="col-xs-4 text-right" style="padding-top: 20px;">
+			{% if (permissao.inserir == true) %}
+			<button class="btn btn-primary" type="button" id="btn_inserir" aria-label="Left Align">
+				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Inserir
+			</button>
+			{% endif %}
+			<button class="btn btn-primary" type="button" id="btn_grafico" aria-label="Left Align">
+				<span class="glyphicon glyphicon-signal" aria-hidden="true"></span> Gráfico
+			</button>
+		</div>
+		
+		
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<table class="table table-striped" id="listar" data-order='[[ 1, "asc" ]]' data-page-length="50">
+				<thead>
+					<tr>
+						<th width="40%">Nome</th>
+						<th width="20%">Data de início</th>
+						<th width="10%" style="text-align: center;">Finalizada</th>
+						{% if permissao.alterar or permissao.excluir %}
+						<th width="20%" style="text-align: center;">Ação</th>
+						{% endif %}
+						
+					</tr>
+				</thead>
+				<tbody>
+					{% for o in operacoes %}
+					<tr id="linha{{ o.id }}">
+						<td align="left">{{ o.nome }}</td>
+						<td align="left">{{ o.data }}</td>
+						<td align="center">
+						{% if permissao.alterar %}
+						<input type="hidden" id="finalizada{{ o.id }}" value="{{ o.finalizada }}">
+						<a href="javascript:void(0)" id="f{{ o.id }}" class="altera_finalizada" title="Alterar valor">
+						{% endif %}
+							<span class="glyphicon {% if o.finalizada == '1' %} glyphicon-ok {% else %} glyphicon-remove {% endif %}"></span>
+						{% if permissao.alterar %}
+						</a>
+						{% endif %}	
+						</td>
+						{% if permissao.alterar or permissao.excluir %}
+							<td align="center">
+							<div class="col-sm-6 col-xs-12">
+								{% if permissao.alterar %}
+									<button class="btn btn-primary btn-sm btn-block editar" id="e{{ o.id }}" aria-label="Left Align" type="button">Editar</button>
+								{% endif %}
+							</div>
+							<div class="col-sm-6 col-xs-12">
+								{% if permissao.excluir %}
+									<button class="btn btn-danger btn-sm btn-block delete" id="d{{ o.id }}" aria-label="Left Align" type="button">Excluir</button>
+								{% endif %}
+							</div>
+							</td>
+						{% endif %}
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+	$('#btn_inserir').click(function() {
+		$(this).attr('disabled', true);
+		
+		location.href = '{{ dirRoot }}operacao/cadastro';
+	});
+
+	$('#listar').DataTable({
+		"lengthChange": false,
+		"aoColumnDefs": [
+			{ "orderable": false, "targets": [2, 3] },
+		]
+	});
+
+	$('#btn_grafico').click(function() {
+		$(this).attr('disabled', true);
+		
+		location.href = '{{ dirRoot }}operacao/grafico';
+	});
+
+	$('.editar').click(function() {
+		$(this).attr('disabled', true);
+		
+		location.href = '{{ dirRoot }}operacao/cadastro/'+$(this).attr('id').substr(1);
+	});
+
+	$('.altera_finalizada').on('click', function() {
+		var id = $(this).attr('id').substr(1);
+		var finalizar = ($('#finalizada'+id).val() == 1) ? 0 : 1;
+
+		$.ajax({
+			type: 'PUT',
+			url: '{{ dirRoot }}operacao/',
+			data: { id: id, finalizada: finalizar },
+			dataType: 'json',
+		}).done(function(json) {
+			if (json.r == true) {
+				$('#finalizada'+id).val(finalizar);
+				
+				if (finalizar == 0) {
+					$('#f'+id).html('<span class="glyphicon glyphicon-remove"></span>');
+				} else {
+					$('#f'+id).html('<span class="glyphicon glyphicon-ok"></span>');
+				}
+			}
+		}).fail(function() {
+			bootbox.alert("Erro de retorno", null);
+		}).always(function() {
+			
+		});
+	});
+
+	$('.delete').click(function() {
+		var id = $(this).attr('id').substr(1);
+
+		bootbox.confirm("Deseja excluir essa operação?", function(r) {
+			if (r) {
+				$.ajax({
+					type: 'delete',
+					url: '{{ dirRoot }}operacao/',
+					data: { id: id },
+					dataType: 'json',
+					beforeSend: function() {
+						$('#e'+id).attr('disabled', true);
+					}
+				}).done(function(json) {
+					if (json.r == true) {
+						$('#linha'+id).fadeOut('fast');
+					} else {
+						$('#r_'+id).addClass('alert-danger');
+
+					}
+				}).fail(function() {
+					
+				}).always(function() {
+					$('#e'+id).attr('disabled', false);
+				});
+			}
+		});
+	});
+});
+</script>
+{% include 'rodape.twig' %}

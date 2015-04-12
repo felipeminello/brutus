@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html lang="pt-br">
+<head>
+	<meta charset="utf-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<title>Relatório de Ataques</title>
+	
+	<link rel="stylesheet" type="text/css" href="{{ dirPublic }}css/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="{{ dirPublic }}js/morris/morris.css">
+	<link rel="stylesheet" type="text/css" href="{{ dirPublic }}js/prettify/prettify.css">
+	<link rel="stylesheet" type="text/css" href="{{ dirPublic }}js/jquery-ui/jquery-ui.min.css">
+	
+	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/1.10.6/integration/bootstrap/3/dataTables.bootstrap.css">
+	
+	<link rel="stylesheet" href="{{ dirPublic }}js/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+	
+	<style type="text/css">
+	body {
+		padding-top: 50px;
+	}
+	.starter-template {
+		padding: 40px 15px;
+		text-align: center;
+	}
+	</style>
+	
+	<script type="text/javascript" src="{{ dirPublic }}js/jquery.min.js"></script>
+	<script type="text/javascript" src="{{ dirPublic }}js/jquery.meiomask.min.js"></script>
+	<script type="text/javascript" src="{{ dirPublic }}js/bootstrap/bootstrap.min.js"></script>
+	<script type="text/javascript" src="{{ dirPublic }}js/bootbox.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+	<script type="text/javascript" src="{{ dirPublic }}js/morris/morris.min.js"></script>
+	<script type="text/javascript" src="{{ dirPublic }}js/prettify/prettify.js"></script>
+	<script type="text/javascript" src="{{ dirPublic }}js/jquery-ui/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="{{ dirPublic }}js/jquery-ui/jquery.ui.datepicker-pt-BR.js"></script>
+	
+	<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.6/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="//cdn.datatables.net/plug-ins/1.10.6/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+	<script type="text/javascript" src="//cdn.datatables.net/plug-ins/1.10.6/sorting/datetime-moment.js"></script>
+	
+	<script type="text/javascript" src="{{ dirPublic }}js/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+	
+	<script type="text/javascript">
+	$(document).ready(function() {
+		$('#info').tooltip({
+			content: "Awesome title!",
+			title: "teste"
+		});
+		$('input[type=date], .data').setMask('date');
+		$('.datepicker').datepicker();
+
+		$.extend($.fn.dataTable.defaults, {
+			"language": {
+				"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Portuguese.json"
+			},
+		});
+		$.fn.dataTable.moment('DD/MM/YYYY');
+	});
+	</script>	
+</head>
+<body>

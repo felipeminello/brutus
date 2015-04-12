@@ -1,0 +1,58 @@
+{% include 'cabecalho.twig' %}
+{% include 'menu.twig' %}
+
+<div class="container">
+	<div class="row">
+		<div class="col-xs-8">
+			<h1>Relatório de ataques</h1>
+		</div>
+		<div class="col-xs-4 text-right" style="padding-top: 20px;">
+			{% if (permissao.inserir == true) %}
+			<button class="btn btn-primary" type="button" id="btn_inserir" aria-label="Left Align">
+				<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Inserir
+			</button>
+			{% endif %}
+		</div>
+		
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<table class="table table-striped" id="listar" data-order='[[ 0, "asc" ]]' data-page-length="50">
+				<thead>
+					<tr>
+						<th>Usuário</th>
+						<th>Data de entrada</th>
+						<th>Operação</th>
+						<th>Data da operação</th>
+						<th>Valor do ataque <button type="button" data-placement="right" class="btn btn-default btn-xs" data-toggle="tooltip" data-original-title="Tooltip on right"><span class="glyphicon glyphicon-info-sign"></span></button></th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for a in ataques %}
+					<tr>
+						<td>{{ a.nome }}</td>
+						<td>{{ a.dataEntrada }}</td>
+						<td>{{ a.operacao }}</td>
+						<td>{{ a.dataOperacao }}</td>
+						<td>{{ a.valor }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+	$('#btn_inserir').click(function() {
+		$(this).attr('disabled', true);
+		
+		location.href = '{{ dirRoot }}ataque/cadastro';
+	});
+
+	$('#listar').DataTable({
+		"lengthChange": false
+	});
+});
+</script>
+{% include 'rodape.twig' %}

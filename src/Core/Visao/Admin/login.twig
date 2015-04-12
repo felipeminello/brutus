@@ -1,0 +1,67 @@
+{% include 'cabecalho.twig' %}
+{% include 'menu.twig' %}
+<div class="container">
+	<div class="row" style="margin-top: 100px;">
+		<div class="col-md-4 col-md-offset-4">
+			<div class="login-panel panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">Faça o login</h3>
+				</div>
+				<div class="panel-body">
+					<form role="form" id="login">
+						<fieldset>
+							<div class="form-group">
+								<input class="form-control" id="email" placeholder="E-mail" name="email" type="email" autofocus>
+							</div>
+							<div class="form-group">
+								<input class="form-control" id="senha" placeholder="Senha" name="password" type="password" value="">
+							</div>
+							<button class="btn btn-primary btn-lg btn-block" id="e_login" type="submit">Login</button>
+						</fieldset>
+					</form>
+					<div class="alert" style="margin-bottom:0; margin-top:10px;" id="r_login"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+	$('form#login').submit(function() {
+		var id = $(this).attr('id');
+
+		$.ajax({
+			type: '{{ form.type }}',
+			url: '{{ form.action }}',
+			data: { email: $('#email').val(), senha: $('#senha').val() },
+			dataType: '{{ form.dataType }}',
+			beforeSend: function() {
+				$('#e_'+id).attr('disabled', true);
+				$('#r_'+id).removeClass('alert-success alert-danger');
+			}
+		}).done(function(json) {
+			if (json.r == true) {
+				$('#r_'+id).addClass('alert-success');
+
+				if (json.clear == true) {
+					document.getElementById(id).reset();
+
+					setTimeout(function() {
+						location.reload();
+					}, 1000);
+				}
+			} else
+				$('#r_'+id).addClass('alert-danger');
+
+			$('#r_'+id).html(json.m);
+		}).fail(function() {
+			$('#r_'+id).addClass('alert-danger').text('Erro no retorno');
+		}).always(function() {
+			$('#e_'+id).attr('disabled', false);
+		});
+
+		return false;
+	});
+});
+</script>
+{% include 'rodape.twig' %}

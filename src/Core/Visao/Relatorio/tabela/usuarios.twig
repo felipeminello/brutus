@@ -1,0 +1,77 @@
+{% include 'cabecalho.twig' %}
+{% include 'menu.twig' %}
+
+<div class="container">
+	<div class="row">
+		<div class="col-xs-12">
+			<h1>Total de ataques por usuário</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<table class="table table-striped" id="listar" data-order='[[ 0, "asc" ]]' data-page-length="50">
+				<thead>
+					<tr>
+						<th width="45%">Usuário</th>
+						<th width="30%">Data de entrada</th>
+						<th width="10%" style="text-align: center;">Quantidade</th>
+						<th width="15%" style="text-align: center;">Ação</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for a in arrayAtaque %}
+					<tr id="linha{{ a.id }}">
+						<td align="left">{{ a.nome }} ({{ a.tipo }})</td>
+						<td align="left">{{ a.dataEntrada }}</td>
+						<td align="center">{{ a.quantidade }}</td>
+						<td align="center">
+							<div class="col-xs-12">
+								<button class="btn btn-primary btn-sm btn-block ver_ataque" id="ver{{ a.id }}" aria-label="Left Align" type="button">Ver ataques</button>
+							</div>
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+	$('#listar').DataTable({
+		"lengthChange": false,
+		"aoColumnDefs": [
+     			{ "orderable": false, "targets": [3] },
+     		]
+	});
+
+	$('.ver_ataque').click(function() {
+		var idUsuario = $(this).attr('id').substr(3);
+		
+		$.ajax({
+			type: 'GET',
+			url: '{{ dirRoot }}ataque/usuario/'+idUsuario,
+			dataType: 'html',
+			beforeSend: function() {
+				$('#ver'+idUsuario).attr('disabled', true);
+			}
+		}).done(function(data) {
+			bootbox.dialog({
+	            message: data,
+	            title: "Ataques",
+	            buttons: {
+	                success: {
+	                    label: "Fechar",
+	                    className: "btn-primary",
+	                },
+	            }
+	        });
+		}).fail(function() {
+			bootbox.alert('Erro no retorno');
+		}).always(function() {
+			$('#ver'+idUsuario).attr('disabled', false);
+		});
+	});
+});
+</script>
+{% include 'rodape.twig' %}

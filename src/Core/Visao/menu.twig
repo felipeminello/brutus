@@ -1,0 +1,49 @@
+<!-- fixed navigation bar -->
+<div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+  <div class="container">
+	<div class="navbar-header">
+	  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#b-menu-1">
+		<span class="sr-only">Toggle navigation</span>
+		<span class="icon-bar"></span>
+		<span class="icon-bar"></span>
+		<span class="icon-bar"></span>
+	  </button>
+	  <a class="navbar-brand" href="{{ dirRoot }}">Relatório de Ataques</a>
+	</div>
+	<div class="collapse navbar-collapse" id="b-menu-1">
+	  <ul class="nav navbar-nav navbar-right">
+		<li class="dropdown">
+		  <a href="#" class="dropdown-toggle {% if classMenuAtivo == 'relatorio' %} active {% endif %}" data-toggle="dropdown">Relatórios <b class="caret"></b></a>
+		  <ul class="dropdown-menu">
+	  		<li class="dropdown-header">Tabelas</li>
+			<li><a href="{{ dirRoot }}relatorio/ataque">Ataques</a></li>
+			<li><a href="{{ dirRoot }}relatorio/usuario">Usuários</a></li>
+			<li><a href="{{ dirRoot }}relatorio/operacao">Operações</a></li>
+			<li><a href="{{ dirRoot }}relatorio/frequencia">Frequência</a></li>
+			<li class="divider"></li>
+			<li class="dropdown-header">Gráficos</li>
+			<li><a href="{{ dirRoot }}grafico/operacao">Operações</a></li>
+			<li><a href="{{ dirRoot }}grafico/usuario">Usuários</a></li>
+		  </ul>
+		</li>
+		<li class="{% if classMenuAtivo == 'operacao' %} active {% endif %}"><a href="{{ dirRoot }}operacao">Operações</a></li>
+		<li class="{% if classMenuAtivo == 'usuario' %} active {% endif %}"><a href="{{ dirRoot }}usuario">Usuários</a></li>
+		
+		{% if admin.id is defined %}
+		<li class="dropdown">
+			<a href="#" class="dropdown-toggle {% if classMenuAtivo == 'relatorio' %} active {% endif %}" data-toggle="dropdown">Meus dados <b class="caret"></b></a>
+			<ul class="dropdown-menu">
+				<li><a href="{{ dirRoot }}admin/cadastro">Perfil</a></li>
+				<li class="divider"></li>
+				<li class="{% if classMenuAtivo == 'logout' %} active {% endif %}"><a href="{{ dirRoot }}admin/logout">Logout</a></li>
+			  </ul>
+		</li>
+		
+		{% else %}
+		<li class="{% if classMenuAtivo == 'login' %} active {% endif %}"><a href="{{ dirRoot }}admin">Login</a></li>
+		{% endif %}
+	  </ul>
+	</div> <!-- /.nav-collapse -->
+  </div> <!-- /.container -->
+</div> <!-- /.navbar -->
+
